@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filterreading-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filterreading
+  template:
+    metadata:
+      labels:
+        app: filterreading
+    spec:
+      serviceAccountName: design-ksa
+      containers:
+      - name: filterreading
+        image: $FILTER_IMAGE
+        env:
+        - name: GCP_PROJECT
+          value: $PROJECT
+        - name: TOPIC_NAME
+          value: smart-readings
+        - name: SUB_ID
+          value: smart-filter-sub
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: convertreading-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: convertreading
+  template:
+    metadata:
+      labels:
+        app: convertreading
+    spec:
+      serviceAccountName: design-ksa
+      containers:
+      - name: convertreading
+        image: $CONVERT_IMAGE
+        env:
+        - name: GCP_PROJECT
+          value: $PROJECT
+        - name: TOPIC_NAME
+          value: smart-readings
+        - name: SUB_ID
+          value: smart-convert-sub
